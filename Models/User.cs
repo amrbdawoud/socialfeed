@@ -4,9 +4,8 @@ namespace socialfeed.Models
 {
     public class User
     {
-        [Required]
         [Key]
-        public required int Id { get; set; }
+        public int Id { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         [Required]

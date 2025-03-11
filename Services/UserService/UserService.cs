@@ -28,6 +28,32 @@ public class UserService : IUserService
         return user;
     }
 
+    public User? EditUser(int id, User user)
+    {
+         try
+    {
+        var existingUser = _context.Users
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .FirstOrDefault();
+
+        if (existingUser == null)
+        {
+            return null;
+        }
+
+        // Update only the fields that can be edited
+        existingUser.Name = user.Name;
+        existingUser.Bio = user.Bio;
+        
+        _context.SaveChanges();
+        return existingUser;
+    }
+    catch (Exception)
+    {
+        return null;
+    }
+    }
+
     public User? GetUser(int id)
     {
         var user = _context.Users.Where(u => u.Id == id && !u.IsDeleted).FirstOrDefault(); // Note: should i use async?
