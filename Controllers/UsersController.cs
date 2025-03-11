@@ -15,7 +15,7 @@ namespace socialfeed.Controllers
             _userService = userService;
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public IActionResult EditUser(int id, [FromBody] User user){
             if (!ModelState.IsValid)
             {
@@ -25,7 +25,7 @@ namespace socialfeed.Controllers
             if (result == null){
                 return BadRequest("Failed to edit user.");
             }
-            return CreatedAtAction(nameof(GetUser), new { id = result.Id}, result);
+            return Ok(result);
         
         }
 
