@@ -55,5 +55,11 @@ namespace socialfeed.Controllers
 
             return Ok(_userService.GetUser(id));
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id){
+            var deletedUser = _userService.DeleteUser(id);
+            return Ok(deletedUser);
+        }
     }
 }

@@ -17,47 +17,64 @@ public class UserService : IUserService
     {
         try
         {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
         catch (System.Exception)
         {
-            
+
             return null;
         }
         return user;
     }
 
-    public User? EditUser(int id, User user)
+    public User? DeleteUser(int id)
     {
-         try
-    {
-        var existingUser = _context.Users
-            .Where(u => u.Id == id && !u.IsDeleted)
-            .FirstOrDefault();
-
-        if (existingUser == null)
+        var userToDelete = _context.Users
+        .Where(u => u.Id == id && !u.IsDeleted)
+        .FirstOrDefault();
+        if (userToDelete == null)
         {
             return null;
         }
-
-        // Update only the fields that can be edited
-        existingUser.Name = user.Name;
-        existingUser.Bio = user.Bio;
-        
+        userToDelete.IsDeleted = true;
         _context.SaveChanges();
-        return existingUser;
+        return userToDelete;
     }
-    catch (Exception)
+
+    public User? EditUser(int id, User user)
     {
-        return null;
-    }
+        try
+        {
+            var existingUser = _context.Users
+                .Where(u => u.Id == id && !u.IsDeleted)
+                .FirstOrDefault();
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            // Update only the fields that can be edited
+            existingUser.Name = user.Name;
+            existingUser.Bio = user.Bio;
+
+            _context.SaveChanges();
+            return existingUser;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     public User? GetUser(int id)
     {
-        var user = _context.Users.Where(u => u.Id == id && !u.IsDeleted).FirstOrDefault(); // Note: should i use async?
-        if (user == null){
+        var user = _context.Users
+        .Where(u => u.Id == id && !u.IsDeleted)
+        .FirstOrDefault(); // Note: should i use async?
+        if (user == null)
+        {
             return null;
         }
         return user;
@@ -65,7 +82,9 @@ public class UserService : IUserService
 
     public List<User> GetUsers()
     {
-        List<User> users = _context.Users.Where(u => !u.IsDeleted).ToList();
+        List<User> users = _context.Users
+        .Where(u => !u.IsDeleted)
+        .ToList();
         return users;
     }
 }
