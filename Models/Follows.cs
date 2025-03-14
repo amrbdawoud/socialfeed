@@ -5,12 +5,10 @@ namespace socialfeed.Models
 {
     public class Follows
     {
-        [Required]
         [Key]
         [ForeignKey(nameof(Follower))]
         public required int FollowerId { get; set; }
 
-        [Required]
         [ForeignKey(nameof(Following))]
         public required int FollowingId { get; set; }
 

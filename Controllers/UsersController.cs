@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using socialfeed.Models;
 using socialfeed.Services.UserService;
@@ -52,8 +53,12 @@ namespace socialfeed.Controllers
         [HttpGet("{id}")]
         public IActionResult GetUser(int id)
         {
-
-            return Ok(_userService.GetUser(id));
+            var result = _userService.GetUser(id);
+            if (result == null)
+            {
+                return NotFound("user not found");
+            }
+            return Ok();
         }
 
         [HttpDelete("{id}")]

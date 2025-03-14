@@ -5,9 +5,8 @@ namespace socialfeed.Models
 {
     public class Post
     {
-        [Required]
         [Key]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]

@@ -5,9 +5,8 @@ namespace socialfeed.Models
 {
     public class Comment
     {
-        [Required]
         [Key]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [ForeignKey(nameof(Post))]

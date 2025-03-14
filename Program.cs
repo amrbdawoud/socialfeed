@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Middleware.Example;
 using Scalar.AspNetCore;
 using socialfeed.Data;
+using socialfeed.Models;
 using socialfeed.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +19,7 @@ var app = builder.Build();
 
 app.UseRouting();
 // app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorMiddleware>();
 app.MapControllers();
 
 app.MapOpenApi();
@@ -29,7 +31,6 @@ options
 
 // app.UseAuthentication();
 // app.UseAuthorization();
-
 
 
 app.Run();
