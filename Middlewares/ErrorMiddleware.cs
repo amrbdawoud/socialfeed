@@ -28,7 +28,7 @@ public class ErrorMiddleware
         }
         catch (Exception e)
         {
-            context.Response.StatusCode = 500;
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync($"internal server error: {e.Message}");
         }
     }

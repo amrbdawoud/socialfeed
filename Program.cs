@@ -19,6 +19,8 @@ var app = builder.Build();
 
 app.UseRouting();
 // app.UseHttpsRedirection();
+
+// error handling middleware
 app.UseMiddleware<ErrorMiddleware>();
 app.MapControllers();
 

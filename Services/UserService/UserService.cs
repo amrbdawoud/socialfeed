@@ -1,7 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using socialfeed.Data;
+using socialfeed.Errors;
 using socialfeed.Models;
 
 namespace socialfeed.Services.UserService;
@@ -19,29 +21,48 @@ public class UserService : IUserService
         {
             _context.Users.Add(user);
             _context.SaveChanges();
+            return user;
         }
-        catch (System.Exception)
+        catch (Exception e)
         {
 
-            return null;
+            throw new UserCreationException(e.Message);
         }
-        return user;
     }
-
-    public User? DeleteUser(int id)
+    public User? GetUser(int id)
     {
-        var userToDelete = _context.Users
-        .Where(u => u.Id == id && !u.IsDeleted)
-        .FirstOrDefault();
-        if (userToDelete == null)
+        try
         {
-            return null;
+            var user = _context.Users
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .FirstOrDefault(); // Note: should i use async?
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+            return user;
         }
-        userToDelete.IsDeleted = true;
-        _context.SaveChanges();
-        return userToDelete;
-    }
+        catch (System.Exception e)
+        {
 
+            throw new UserRetrieveException(e.Message);
+        }
+    }
+    public List<User> GetUsers()
+    {
+        try
+        {
+            List<User> users = _context.Users
+            .Where(u => !u.IsDeleted)
+            .ToList();
+            return users;
+        }
+        catch (System.Exception e)
+        {
+
+            throw new UserRetrieveException(e.Message);
+        }
+    }
     public User? EditUser(int id, User user)
     {
         try
@@ -52,7 +73,7 @@ public class UserService : IUserService
 
             if (existingUser == null)
             {
-                return null;
+                throw new UserNotFoundException(id);
             }
 
             // Update only the fields that can be edited
@@ -62,29 +83,32 @@ public class UserService : IUserService
             _context.SaveChanges();
             return existingUser;
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return null;
+            throw new UserUpdateException(e.Message);
+        }
+    }
+    public User? DeleteUser(int id)
+    {
+        try
+        {
+            var userToDelete = _context.Users
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .FirstOrDefault();
+            if (userToDelete == null || userToDelete.IsDeleted)
+            {
+                throw new UserNotFoundException(id);
+            }
+            userToDelete.IsDeleted = true;
+            _context.SaveChanges();
+            return userToDelete;
+
+        }
+        catch (Exception e)
+        {
+
+            throw new UserDeleteException(e.Message);
         }
     }
 
-    public User? GetUser(int id)
-    {
-        var user = _context.Users
-        .Where(u => u.Id == id && !u.IsDeleted)
-        .FirstOrDefault(); // Note: should i use async?
-        if (user == null)
-        {
-            return null;
-        }
-        return user;
-    }
-
-    public List<User> GetUsers()
-    {
-        List<User> users = _context.Users
-        .Where(u => !u.IsDeleted)
-        .ToList();
-        return users;
-    }
 }
