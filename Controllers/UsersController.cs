@@ -22,12 +22,8 @@ namespace socialfeed.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = _userService.EditUser(id, user);
-            if (result == null){
-                return BadRequest("Failed to edit user.");
-            }
-            return Ok(result);
-        
+            var editedUser = _userService.EditUser(id, user);
+            return Ok(editedUser);
         }
 
         [HttpPost]
@@ -37,28 +33,22 @@ namespace socialfeed.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = _userService.CreateUser(user);
-            if (result == null){
-                return BadRequest("Failed to create user.");
-            }
-            return CreatedAtAction(nameof(GetUser), new { id = result.Id}, result);
+            var createdUser = _userService.CreateUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id}, createdUser);
         }
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            return Ok(_userService.GetUsers());
+            var users = _userService.GetUsers();
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetUser(int id)
         {
-            var result = _userService.GetUser(id);
-            if (result == null)
-            {
-                return NotFound("user not found");
-            }
-            return Ok();
+            var user = _userService.GetUser(id);
+            return Ok(user);
         }
 
         [HttpDelete("{id}")]
